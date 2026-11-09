@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SYNTRA AI</title>
+<style>
+  :root { --bg:#0b0f17; --panel:#121826; --line:#243049; --text:#e6ebf5; --muted:#8a97b1; --accent:#4f8cff; --ok:#3ddc97; --bad:#ff6b6b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .center { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:1rem; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:1.75rem; width:100%; max-width:380px; }
+  h1 { margin:0 0 .25rem; font-size:1.5rem; letter-spacing:.08em; }
+  p.sub { margin:0 0 1.25rem; color:var(--muted); font-size:.9rem; }
+  label { display:block; font-size:.8rem; color:var(--muted); margin:.75rem 0 .25rem; }
+  input { width:100%; padding:.65rem .75rem; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--text); font-size:1rem; }
+  input:focus { outline:2px solid var(--accent); border-color:transparent; }
+  button { width:100%; margin-top:1.1rem; padding:.7rem; border:0; border-radius:8px; background:var(--accent); color:#fff; font-size:1rem; cursor:pointer; }
+  button.link { background:none; color:var(--accent); margin-top:.5rem; font-size:.85rem; }
+  button.ghost { background:transparent; border:1px solid var(--line); width:auto; padding:.4rem .9rem; margin:0; font-size:.85rem; }
+  .err { color:var(--bad); font-size:.85rem; min-height:1.2rem; margin-top:.75rem; }
+  .hidden { display:none !important; }
+  header { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid var(--line); }
+  header strong { letter-spacing:.08em; }
+  main { max-width:900px; margin:0 auto; padding:1.5rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
+  .tile { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:1rem; }
+  .tile h3 { margin:0 0 .4rem; font-size:1rem; }
+  .tile p { margin:0; color:var(--muted); font-size:.85rem; }
+  .badge { display:inline-block; font-size:.7rem; padding:.15rem .5rem; border-radius:99px; border:1px solid var(--line); color:var(--muted); margin-top:.6rem; }
+  .dot { display:inline-block; width:.6rem; height:.6rem; border-radius:50%; background:var(--muted); margin-right:.4rem; }
+  .dot.ok { background:var(--ok); } .dot.bad { background:var(--bad); }
+</style>
+</head>
+<body>
+
+<div id="auth" class="center">
+  <div class="card">
+    <h1>SYNTRA AI</h1>
+    <p class="sub" id="authSub">Sign in to your assistant</p>
+    <div id="nameRow" class="hidden"><label for="name">Name</label><input id="name" autocomplete="name"></div>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="email">
+    <label for="password">Password (min 8 characters)</label><input id="password" type="password" autocomplete="current-password">
+    <button id="submit">Sign in</button>
+    <button class="link" id="toggle">First time? Create the owner account</button>
+    <div class="err" id="err"></div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <strong>SYNTRA AI</strong>
+    <div><span id="who" style="color:var(--muted);margin-right:1rem"></span><button class="ghost" id="logout">Sign out</button></div>
+  </header>
+  <main>
+    <h2>Dashboard</h2>
+    <p style="color:var(--muted)"><span class="dot" id="healthDot"></span><span id="healthText">Checking backend...</span></p>
+    <div class="grid">
+      <div class="tile"><h3>Chat</h3><p>Talk to your assistant with streaming replies.</p><span class="badge">Phase 2</span></div>
+      <div class="tile"><h3>Memory</h3><p>Things SYNTRA remembers about you. You control them.</p><span class="badge">Phase 3</span></div>
+      <div class="tile"><h3>Knowledge</h3><p>Upload documents and ask questions about them.</p><span class="badge">Phase 3</span></div>
+      <div class="tile"><h3>Agents and Tools</h3><p>Let SYNTRA take actions, with your approval.</p><span class="badge">Phase 4-5</span></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let registering = false;
+
+function store(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+function setMode(reg) {
+  registering = reg;
+  $("nameRow").classList.toggle("hidden", !reg);
+  $("authSub").textContent = reg ? "Create the owner account" : "Sign in to your assistant";
+  $("submit").textContent = reg ? "Create account" : "Sign in";
+  $("toggle").textContent = reg ? "Already have an account? Sign in" : "First time? Create the owner account";
+  $("err").textContent = "";
+}
+
+async function api(path, opts = {}) {
+  const token = load("syntra_token");
+  const res = await fetch(path, {
+    ...opts,
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Request failed (" + res.status + ")");
+  return data;
+}
+
+function showApp(user) {
+  $("auth").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("who").textContent = user.name;
+  api("/api/v1/health").then(h => {
+    $("healthDot").className = "dot ok";
+    $("healthText").textContent = "Backend online (v" + h.version + ")";
+  }).catch(() => {
+    $("healthDot").className = "dot bad";
+    $("healthText").textContent = "Backend not reachable";
+  });
+}
+
+$("toggle").onclick = () => setMode(!registering);
+
+$("submit").onclick = async () => {
+  $("err").textContent = "";
+  const body = { email: $("email").value, password: $("password").value };
+  if (registering) body.name = $("name").value;
+  try {
+    const data = await api(registering ? "/api/v1/auth/register" : "/api/v1/auth/login", { method: "POST", body: JSON.stringify(body) });
+    store("syntra_token", data.token);
+    showApp(data.user);
+  } catch (e) { $("err").textContent = e.message; }
+};
+
+$("logout").onclick = () => { store("syntra_token", null); location.reload(); };
+
+(async () => {
+  if (!load("syntra_token")) return;
+  try { showApp(await api("/api/v1/auth/me")); } catch (e) { store("syntra_token", null); }
+})();
+</script>
+</body>
+</html>
