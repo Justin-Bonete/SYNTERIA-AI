@@ -197,7 +197,6 @@
       .dot.bad {
         background: var(--bad);
       }
-      /* auth overlay */
       #auth {
         position: fixed;
         inset: 0;
@@ -207,7 +206,178 @@
         backdrop-filter: blur(10px);
       }
       #auth .card {
-        animation: pop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        max-width: 420px;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem;
+        background: var(--glass);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 0 90px -20px var(--accent);
+        animation: pop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      #auth .card.shake {
+        animation: sh 0.4s;
+      }
+      @keyframes sh {
+        20%,
+        60% {
+          transform: translateX(-8px);
+        }
+        40%,
+        80% {
+          transform: translateX(8px);
+        }
+      }
+      #auth .card::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -60px;
+        height: 60px;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(61, 220, 151, 0.12)
+        );
+        border-bottom: 1px solid rgba(61, 220, 151, 0.5);
+        animation: scan 4s linear infinite;
+        pointer-events: none;
+      }
+      @keyframes scan {
+        to {
+          top: 100%;
+        }
+      }
+      .orb {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 35% 35%,
+          #fff,
+          var(--accent) 45%,
+          var(--ok)
+        );
+        box-shadow: 0 0 24px var(--accent);
+        animation: orb 2.4s ease-in-out infinite;
+      }
+      @keyframes orb {
+        50% {
+          transform: scale(1.18);
+          box-shadow: 0 0 44px var(--ok);
+        }
+      }
+      .stat {
+        display: flex;
+        gap: 0.45rem;
+        align-items: center;
+        font:
+          0.65rem ui-monospace,
+          monospace;
+        letter-spacing: 0.16em;
+        color: var(--ok);
+        margin-bottom: 0.9rem;
+      }
+      .stat i {
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: var(--ok);
+        animation: bl 1.2s infinite;
+      }
+      .tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.25rem;
+        padding: 0.25rem;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        margin: 0 0 1rem;
+        background: var(--bg);
+      }
+      .tab {
+        margin: 0 !important;
+        padding: 0.55rem !important;
+        background: transparent;
+        color: var(--muted);
+        font-size: 0.85rem !important;
+      }
+      .tab.on {
+        background: var(--accent);
+        color: #fff;
+      }
+      .pw {
+        position: relative;
+      }
+      .pw input {
+        padding-right: 4rem;
+      }
+      .eye {
+        position: absolute;
+        right: 0.3rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: auto;
+        margin: 0;
+        padding: 0.35rem 0.6rem;
+        background: none;
+        color: var(--muted);
+        font-size: 0.75rem;
+      }
+      #auth input:focus {
+        box-shadow: 0 0 0 4px rgba(79, 140, 255, 0.18);
+      }
+      #submit {
+        background: linear-gradient(120deg, var(--accent), #7a5cff);
+        box-shadow: 0 8px 30px -8px var(--accent);
+        font-weight: 600;
+      }
+      #submit.busy {
+        pointer-events: none;
+        opacity: 0.8;
+      }
+      #submit.busy::after {
+        content: "";
+        display: inline-block;
+        width: 0.9rem;
+        height: 0.9rem;
+        margin-left: 0.6rem;
+        border: 2px solid #fff;
+        border-top-color: transparent;
+        border-radius: 50%;
+        vertical-align: -2px;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #meter {
+        display: flex;
+        gap: 0.3rem;
+        margin-top: 0.5rem;
+      }
+      #meter i {
+        flex: 1;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--line);
+        transition: 0.3s;
+      }
+      .sn {
+        margin-top: 0.9rem;
+        text-align: center;
+        font:
+          0.65rem ui-monospace,
+          monospace;
+        letter-spacing: 0.12em;
+        color: var(--muted);
       }
       @keyframes pop {
         from {
@@ -215,7 +385,6 @@
           transform: perspective(800px) rotateX(25deg) translateY(30px);
         }
       }
-      /* landing */
       #fx {
         position: fixed;
         inset: 0;
@@ -333,7 +502,7 @@
       .hero p {
         color: var(--muted);
         font-size: clamp(1rem, 2.4vw, 1.2rem);
-        max-width: 560px;
+        max-width: 600px;
         margin: 0 auto 2rem;
         transform: translateZ(50px);
       }
@@ -370,7 +539,7 @@
       .sec > p {
         color: var(--muted);
         text-align: center;
-        max-width: 560px;
+        max-width: 600px;
         margin: 0 auto 3rem;
       }
       .r3d {
@@ -486,6 +655,9 @@
         backdrop-filter: blur(10px);
         backface-visibility: hidden;
         box-shadow: 0 0 40px -18px var(--accent);
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
       }
       .rc h4 {
         margin: 0 0 0.5rem;
@@ -494,17 +666,12 @@
       .rc p {
         margin: 0;
         color: var(--muted);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
       .rc .ic {
         font-size: 2.2rem;
         display: block;
         margin-bottom: 1rem;
-      }
-      .rc {
-        transition:
-          border-color 0.3s,
-          box-shadow 0.3s;
       }
       .rc.on {
         border-color: var(--accent);
@@ -660,12 +827,13 @@
 
       <section class="hero" id="hero">
         <div class="hin" id="hin">
-          <span class="pill"><i></i>SWARM ONLINE · SCANNING</span>
-          <h2>An AI that thinks in swarms.</h2>
+          <span class="pill"><i></i>SYSTEM ONLINE · 8 AGENTS ACTIVE</span>
+          <h2>Your AI. Always awake. Always ahead.</h2>
           <p>
-            SYNTRA routes every request across a swarm of specialised agents,
-            memory and tools, so you get faster, sharper answers. You stay in
-            control.
+            SYNTRA is a personal AI command center. It understands what you
+            mean, remembers what matters, reads your documents, and takes action
+            through a swarm of specialised agents working in parallel. Nothing
+            sensitive runs without your approval.
           </p>
           <div class="cta">
             <button id="hGo">Launch SYNTRA</button
@@ -677,32 +845,35 @@
       <section class="sec" id="how">
         <h3 class="r3d">Scan. Route. Act.</h3>
         <p class="r3d">
-          A swarm of cursors scans, routes and builds this page live, drawing
-          boxes and selecting text on their own.
+          Every request runs through the same three-stage loop, so complex work
+          gets planned, executed and verified before it reaches you. Watch the
+          swarm work on this page in real time.
         </p>
         <div class="steps">
           <div class="step r3d" data-d="-1">
             <em>01 · SCAN</em>
-            <h4>Understand intent</h4>
+            <h4>Read the intent</h4>
             <p>
-              A scanning beam reads your request, context and memory before
-              anything runs.
+              SYNTRA reads your request alongside your memory, files and
+              context, then works out the real goal and breaks it into a plan
+              before anything runs.
             </p>
           </div>
           <div class="step r3d" data-d="0">
             <em>02 · ROUTE</em>
             <h4>Dispatch the swarm</h4>
             <p>
-              Agents are picked per task and routed through the best path of
-              tools and models.
+              Specialised agents for research, writing, code, retrieval and
+              tools are chosen per task and run in parallel, each on the model
+              best suited to the job.
             </p>
           </div>
           <div class="step r3d" data-d="1">
             <em>03 · ACT</em>
-            <h4>Verify and deliver</h4>
+            <h4>Verify, then deliver</h4>
             <p>
-              Results are cross-checked. Sensitive actions always wait for your
-              approval.
+              Results are cross-checked against sources before you see them.
+              Emails, purchases and file changes always pause for your approval.
             </p>
           </div>
         </div>
@@ -710,9 +881,10 @@
 
       <section id="feat" style="height: 420vh; position: relative">
         <div class="pin">
-          <h3>Everything, in orbit.</h3>
+          <h3>One system. Six superpowers.</h3>
           <p>
-            Scroll, drag or use the arrows to bring each feature to the front.
+            Scroll, drag or use the arrows to bring each capability to the
+            front.
           </p>
           <div class="ringwrap" id="rw"><div class="ring" id="ring"></div></div>
           <div class="ctl">
@@ -724,26 +896,39 @@
       </section>
 
       <section class="end">
-        <h3 class="r3d">Ready when you are.</h3>
+        <h3 class="r3d">Your AI is standing by.</h3>
         <button class="r3d" id="eGo">Create your owner account</button>
       </section>
       <footer>
-        © SYNTRA AI · Built for people who want to stay in control.
+        © SYNTRA AI · Intelligence that works for you, and answers to you.
         <p><strong>Develop by:</strong> Carl Justin B. Bonete</p>
       </footer>
     </div>
 
     <div id="auth" class="center hidden">
       <div class="card">
+        <div class="orb"></div>
+        <div class="stat"><i></i>SECURE CHANNEL · ENCRYPTED</div>
         <h1>SYNTRA AI</h1>
-        <p class="sub" id="authSub">Sign in to your assistant</p>
+        <p class="sub" id="authSub">Authenticate to access your assistant</p>
+        <div class="tabs">
+          <button class="tab on" id="tabIn">Sign in</button
+          ><button class="tab" id="tabUp">Create account</button>
+        </div>
         <div id="nameRow" class="hidden">
           <label for="name">Name</label><input id="name" autocomplete="name" />
         </div>
         <label for="email">Email</label
         ><input id="email" type="email" autocomplete="email" />
-        <label for="password">Password (min 8 characters)</label
-        ><input id="password" type="password" autocomplete="current-password" />
+        <label for="password">Password (min 8 characters)</label>
+        <div class="pw">
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+          /><button type="button" class="eye" id="eye">Show</button>
+        </div>
+        <div id="meter" class="hidden"><i></i><i></i><i></i><i></i></div>
         <button id="submit">Sign in</button>
         <button class="link" id="toggle">
           First time? Create the owner account
@@ -752,6 +937,7 @@
           Close
         </button>
         <div class="err" id="err"></div>
+        <div class="sn">256-BIT ENCRYPTED · YOUR DATA STAYS YOURS</div>
       </div>
     </div>
 
@@ -764,30 +950,42 @@
         </div>
       </header>
       <main>
-        <h2>Dashboard</h2>
+        <h2>Command Center</h2>
         <p style="color: var(--muted)">
           <span class="dot" id="healthDot"></span
-          ><span id="healthText">Checking backend...</span>
+          ><span id="healthText">Running system diagnostics...</span>
         </p>
         <div class="grid">
           <div class="tile">
             <h3>Chat</h3>
-            <p>Talk to your assistant with streaming replies.</p>
+            <p>
+              Talk or type to your assistant and get live, streaming replies as
+              the swarm works.
+            </p>
             <span class="badge">Phase 2</span>
           </div>
           <div class="tile">
             <h3>Memory</h3>
-            <p>Things SYNTRA remembers about you. You control them.</p>
+            <p>
+              Preferences, projects and people SYNTRA remembers. Review, edit or
+              erase anything at any time.
+            </p>
             <span class="badge">Phase 3</span>
           </div>
           <div class="tile">
             <h3>Knowledge</h3>
-            <p>Upload documents and ask questions about them.</p>
+            <p>
+              Upload PDFs, notes and docs, then ask questions and get answers
+              grounded in your own files.
+            </p>
             <span class="badge">Phase 3</span>
           </div>
           <div class="tile">
             <h3>Agents and Tools</h3>
-            <p>Let SYNTRA take actions, with your approval.</p>
+            <p>
+              Let SYNTRA search, write, code and automate for you. Every
+              sensitive action waits for your approval.
+            </p>
             <span class="badge">Phase 4-5</span>
           </div>
         </div>
@@ -812,10 +1010,14 @@
       }
       function setMode(reg) {
         registering = reg;
+        $("tabIn").classList.toggle("on", !reg);
+        $("tabUp").classList.toggle("on", reg);
+        $("meter").classList.toggle("hidden", !reg);
+        $("password").autocomplete = reg ? "new-password" : "current-password";
         $("nameRow").classList.toggle("hidden", !reg);
         $("authSub").textContent = reg
           ? "Create the owner account"
-          : "Sign in to your assistant";
+          : "Authenticate to access your assistant";
         $("submit").textContent = reg ? "Create account" : "Sign in";
         $("toggle").textContent = reg
           ? "Already have an account? Sign in"
@@ -859,7 +1061,8 @@
         api("/api/v1/health")
           .then((h) => {
             $("healthDot").className = "dot ok";
-            $("healthText").textContent = "Backend online (v" + h.version + ")";
+            $("healthText").textContent =
+              "All systems online (v" + h.version + ")";
           })
           .catch(() => {
             $("healthDot").className = "dot bad";
@@ -867,8 +1070,41 @@
           });
       }
       $("toggle").onclick = () => setMode(!registering);
+      $("tabIn").onclick = () => setMode(false);
+      $("tabUp").onclick = () => setMode(true);
+      $("eye").onclick = () => {
+        const p = $("password"),
+          h = p.type === "password";
+        p.type = h ? "text" : "password";
+        $("eye").textContent = h ? "Hide" : "Show";
+      };
+      const sg = (v) => {
+        let s = 0;
+        if (v.length >= 8) s++;
+        if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
+        if (/\d/.test(v)) s++;
+        if (/[^A-Za-z0-9]/.test(v) || v.length >= 12) s++;
+        return s;
+      };
+      $("password").addEventListener("input", () => {
+        const s = sg($("password").value),
+          cl = ["#ff6b6b", "#ffb84d", "#4f8cff", "#3ddc97"];
+        [...$("meter").children].forEach((b, i) => {
+          b.style.background = i < s ? cl[s - 1] : "";
+        });
+      });
+      function shake() {
+        const c = document.querySelector("#auth .card");
+        c.classList.remove("shake");
+        void c.offsetWidth;
+        c.classList.add("shake");
+      }
+      $("auth").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") $("submit").click();
+      });
       $("submit").onclick = async () => {
         $("err").textContent = "";
+        $("submit").classList.add("busy");
         const body = { email: $("email").value, password: $("password").value };
         if (registering) body.name = $("name").value;
         try {
@@ -880,7 +1116,9 @@
           showApp(d.user);
         } catch (e) {
           $("err").textContent = e.message;
+          shake();
         }
+        $("submit").classList.remove("busy");
       };
       $("logout").onclick = () => {
         store("syntra_token", null);
@@ -909,15 +1147,39 @@
 
       /* feature ring */
       const F = [
-        ["💬", "Chat", "Streaming replies from the swarm."],
-        ["🧠", "Memory", "You see and control what it remembers."],
-        ["📚", "Knowledge", "Ask questions about your documents."],
-        ["🛠️", "Tools", "Actions that wait for your approval."],
-        ["🧭", "Routing", "The best agent and model per task."],
-        ["🔒", "Private", "Your data stays yours."],
+        [
+          "💬",
+          "Command",
+          "Talk or type. Replies stream live as the swarm plans, researches and answers.",
+        ],
+        [
+          "🧠",
+          "Memory",
+          "Remembers your projects, tastes and routines. You see and control every memory.",
+        ],
+        [
+          "📚",
+          "Knowledge",
+          "Drop in your files and ask anything. Answers are grounded in your own documents.",
+        ],
+        [
+          "🛠️",
+          "Agents",
+          "Searches, writes, codes and automates, and asks before every sensitive action.",
+        ],
+        [
+          "🧭",
+          "Routing",
+          "Picks the best agent and model for each task to balance speed, depth and cost.",
+        ],
+        [
+          "🔒",
+          "Private",
+          "Your data stays yours. Never sold, never shared, deletable on demand.",
+        ],
       ];
       const ring = $("ring");
-      F.forEach((f, i) => {
+      F.forEach((f) => {
         const d = document.createElement("div");
         d.className = "rc";
         d.innerHTML =
@@ -1001,7 +1263,7 @@
         );
       }
 
-      /* swarm cursors (ported from swarm-rebuild) + scan/route */
+      /* swarm cursors + scan/route */
       const cv = $("fx"),
         cx = cv.getContext("2d"),
         sv = $("sw"),
@@ -1300,9 +1562,7 @@
         const w = sx.measureText(s).width + 8;
         sx.fillStyle = col;
         sx.beginPath();
-        sx.roundRect
-          ? sx.roundRect(x - (x < 0 ? 0 : 0), y, w, 16, 3)
-          : sx.rect(x, y, w, 16);
+        sx.roundRect ? sx.roundRect(x, y, w, 16, 3) : sx.rect(x, y, w, 16);
         sx.fill();
         sx.fillStyle = "#fff";
         sx.fillText(s, x + 4, y + 12);
@@ -1528,6 +1788,7 @@
         introUpdate(dt);
         requestAnimationFrame(frame);
       }
+
       /* 3D scroll intro */
       const GAP = 900,
         sc3 = $("scene"),
@@ -1535,10 +1796,10 @@
         FR = [],
         ST = [];
       const IL = [
-        ["SYNTRA AI", "Welcome to<br><span class=g>the swarm.</span>"],
-        ["01 · SCAN", "One request."],
-        ["02 · ROUTE", "A hundred <span class=g>minds.</span>"],
-        ["03 · ACT", "One <span class=g>answer.</span>"],
+        ["SYNTRA AI", "Your AI,<br><span class=g>fully awake.</span>"],
+        ["01 · SCAN", "It hears <span class=g>intent.</span>"],
+        ["02 · ROUTE", "Eight agents. <span class=g>One mind.</span>"],
+        ["03 · ACT", "Done. <span class=g>Verified.</span>"],
         ["YOU STAY IN CONTROL", "<span class=g>Enter.</span>"],
       ];
       IL.forEach((l) => {
